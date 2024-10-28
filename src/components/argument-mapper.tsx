@@ -434,7 +434,7 @@ const ArgumentMapper = () => {
       {/* New Info Card */}
       <Card>
         <CardHeader>
-          <CardTitle>About the Argument Structure Builder</CardTitle>
+          <CardTitle>About the Validity Argument Builder</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p>
@@ -453,7 +453,7 @@ const ArgumentMapper = () => {
       {/* Existing Builder Card */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Argument Structure Builder</CardTitle>
+          <CardTitle>Validity Argument Builder</CardTitle>
           <div className="flex gap-2">
             {/* Hidden file input */}
             <input
