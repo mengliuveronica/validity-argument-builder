@@ -246,7 +246,8 @@ const ArgumentMapper = () => {
     </g>
   );
 
-  const exportAll = async () => {
+  // Separate PNG export function
+  const exportPng = async () => {
     if (svgRef.current) {
       try {
         const svgElement = svgRef.current;
@@ -312,25 +313,6 @@ const ArgumentMapper = () => {
       } catch (error) {
         console.error('Error exporting PNG:', error);
       }
-    }
-
-    // Export Text
-    try {
-      const textContent = Object.entries(argumentData)
-        .map(([key, data]) => {
-          return `${data.title.toUpperCase()}\n${data.content || 'No content provided.'}\n\n`;
-        })
-        .join('---\n\n');
-
-      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const downloadLink = document.createElement('a');
-      downloadLink.href = url;
-      downloadLink.download = 'argument-structure.txt';
-      downloadLink.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error exporting text:', error);
     }
   };
 
@@ -506,7 +488,7 @@ const ArgumentMapper = () => {
                 <TooltipTrigger asChild>
                   <Button 
                     variant="outline"
-                    onClick={exportAll}
+                    onClick={exportPng}  // Changed from exportAll to exportPng
                   >
                     <Download className="mr-2 h-4 w-4" />
                     PNG
