@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Download, Upload } from 'lucide-react';
+import { Download, Upload, ChevronDown } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import {
   Tooltip,
@@ -45,6 +45,7 @@ const PADDING = 20;
 
 const ArgumentMapper = () => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const [isInfoExpanded, setIsInfoExpanded] = useState(false);
 
   const [argumentData, setArgumentData] = useState<ArgumentData>({
     claim: {
@@ -412,121 +413,149 @@ const ArgumentMapper = () => {
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto space-y-4">
-      {/* New Info Card */}
+    <div className="p-4 max-w-6xl mx-auto">
       <Card>
-        <CardHeader>
-          <CardTitle>About the Validity Argument Builder</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p>
-            This tool helps you construct and visualize arguments using argument-based validation approach (Kane, 1992, 2006, 2013). 
-            It allows you to map out the key components of an argument: the claim, data (evidence), 
-            warrant, backing, and potential rebuttals.
-          </p>
-          <div className="text-sm text-muted-foreground">
-            <p>
-              Citation: 
-            </p>
+        <CardHeader className="pb-0">
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-2xl font-semibold">Validity Argument Builder</CardTitle>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Developed by</span>
+                <a 
+                  href="https://mengliu.info/" 
+                  className="text-xs font-medium hover:underline inline-flex items-center gap-1" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  Meng Liu
+                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="text-sm space-y-1.5">
+                <p>
+                  <span className="font-medium">Create and visualize argument structure diagrams with ease</span> based on Kane's (1992, 2006, 2013) argument-based validation framework.
+                </p>
+                <p className="text-muted-foreground">
+                  The layout automatically adjusts as you type. No need to worry about formatting, alignment, or spacing.
+                </p>
+              </div>
+
+              <div className="rounded-lg overflow-hidden border">
+                <div className="px-3 py-2 bg-muted/50 border-b">
+                  <h3 className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Citation</h3>
+                </div>
+                <div className="p-3 bg-background">
+                  <p className="text-sm leading-relaxed">
+                    Liu, M., & Henry, A. (2025). Resolving the crisis in L2 motivational self system research: Constructive dialogue and argument-based validation. <span className="italic font-medium">Studies in Second Language Acquisition</span>.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              {/* Hidden file input */}
+              <input
+                type="file"
+                id="file-import"
+                className="hidden"
+                accept=".txt"
+                onChange={handleImport}
+              />
+              
+              {/* Template button with tooltip */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline"
+                      className="w-[120px]"
+                      onClick={downloadTemplate}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Template
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Download a template file showing the correct format for importing text</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              {/* Import button with tooltip */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline"
+                      className="w-[120px]"
+                      onClick={() => document.getElementById('file-import')?.click()}
+                    >
+                      <Upload className="mr-2 h-4 w-4" />
+                      Import
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Import a text file in the template format to automatically fill the form</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              {/* Export PNG button with tooltip */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline"
+                      className="w-[120px]"
+                      onClick={exportPng}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      PNG
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Save the argument structure diagram as a PNG image</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              {/* Export TXT button with tooltip */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline"
+                      className="w-[120px]"
+                      onClick={exportTxt}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      TXT
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Save your argument content as a text file for later use</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Existing Builder Card */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Validity Argument Builder</CardTitle>
-          <div className="flex gap-2">
-            {/* Hidden file input */}
-            <input
-              type="file"
-              id="file-import"
-              className="hidden"
-              accept=".txt"
-              onChange={handleImport}
-            />
-            
-            {/* Template button with tooltip */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="outline"
-                    onClick={downloadTemplate}
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Template
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Download a template file showing the correct format for importing text</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            {/* Import button with tooltip */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="outline"
-                    onClick={() => document.getElementById('file-import')?.click()}
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    Import
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Import a text file in the template format to automatically fill the form</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            {/* Export PNG button with tooltip */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="outline"
-                    onClick={exportPng}  // Changed from exportAll to exportPng
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    PNG
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Save the argument structure diagram as a PNG image</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            {/* Export TXT button with tooltip */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="outline"
-                    onClick={exportTxt}
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    TXT
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Save your argument content as a text file for later use</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-4">
           <div className="grid grid-cols-12 gap-4">
             {/* Input Form Section */}
-            <div className="col-span-4 flex flex-col h-full pt-4">
+            <div className="col-span-4 flex flex-col h-full">
               <div className="grid grid-rows-6 gap-3 flex-grow">
                 {Object.entries(argumentData).map(([key, data]) => (
                   <div key={key} className="flex flex-col">
                     <label className="block text-sm font-medium mb-1">{data.title}</label>
+                    <p className="text-xs text-muted-foreground mb-2">{getTooltipContent(data.title)}</p>
                     <Textarea
                       value={data.content}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleContentChange(key, e.target.value)}
