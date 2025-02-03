@@ -568,7 +568,7 @@ const ArgumentMapper = () => {
             </div>
 
             {/* Visualization Section */}
-            <div className="col-span-8 bg-white p-4 rounded-lg border">
+            <div className="col-span-8 bg-background p-4 rounded-lg border-input border">
               <svg 
                 ref={svgRef}
                 viewBox={`0 0 ${CANVAS_WIDTH} ${Math.max(800, argumentData.data.position.y + argumentData.data.position.height + 100)}`} 
